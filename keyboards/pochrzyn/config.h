@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PRODUCT_ID      0x2328
 #define DEVICE_VER      0x0205
 #define MANUFACTURER    -
-#define PRODUCT         Pohrzyn
+#define PRODUCT         Pochrzyn
 #define DESCRIPTION     5-key macropad with encoder
 
 /* key matrix size */

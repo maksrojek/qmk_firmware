@@ -18,11 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 enum layers { _LAYER0, _LAYER1, _LAYER2, _LAYER3, _LAYER4 };
 
+int encoder_value = 0;
+
+// custom keycode to increment value on encoder press, to handle encoder functions separate from layers
+enum custom_keycodes {
+    ENCDR_INCRMNT = SAFE_RANGE,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LAYER0] = LAYOUT(
 /* ┌─────────┬─────────┬─────────┐ */
-    TO(_LAYER1), KC_UP,    TO(_LAYER1),
+    ENCDR_INCRMNT, KC_UP,    TO(_LAYER1),
 /* ├─────────┼─────────┼─────────┤ */
        KC_LEFT,  KC_DOWN,  KC_RIGHT
 /* └─────────┴─────────┴─────────┘ */
@@ -30,7 +37,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LAYER1] = LAYOUT(
 /* ┌─────────┬─────────┬─────────┐ */
-    TO(_LAYER2), KC_PGUP,  TO(_LAYER2),
+    ENCDR_INCRMNT, KC_PGUP,  TO(_LAYER2),
 /* ├─────────┼─────────┼─────────┤ */
     KC_HOME,  KC_PGDN,  KC_END
 /* └─────────┴─────────┴─────────┘ */
@@ -38,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LAYER2] = LAYOUT(
 /* ┌─────────┬─────────┬─────────┐ */
-    TO(_LAYER3), KC_MUTE,  TO(_LAYER3),
+    ENCDR_INCRMNT, KC_MUTE,  TO(_LAYER3),
 /* ├─────────┼─────────┼─────────┤ */
     KC_MPRV,  KC_MPLY,  KC_MNXT
 /* └─────────┴─────────┴─────────┘ */
@@ -46,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LAYER3] = LAYOUT(
 /* ┌─────────┬─────────┬─────────┐ */
-   TO(_LAYER4),  KC_MS_U,  TO(_LAYER4),
+   ENCDR_INCRMNT,  KC_MS_U,  TO(_LAYER4),
 /* ├─────────┼─────────┼─────────┤ */
     KC_MS_L,  KC_MS_D,  KC_MS_R
 /* └─────────┴─────────┴─────────┘ */
@@ -54,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_LAYER4] = LAYOUT(
 /* ┌─────────┬─────────┬─────────┐ */
-   TO(_LAYER0),  RGB_VAI,  TO(_LAYER0),
+   ENCDR_INCRMNT,  RGB_VAI,  TO(_LAYER0),
 /* ├─────────┼─────────┼─────────┤ */
     XXXXXXX,  RGB_VAD,  XXXXXXX
 /* └─────────┴─────────┴─────────┘ */
@@ -177,30 +184,54 @@ void oled_task_user(void) {
 
     // encoder
     oled_write_P(PSTR("\nEncdr: "), false);
-    switch (get_highest_layer(layer_state)) {
-        case _LAYER1:
+
+    switch (encoder_value) {
+        case 0:
+            oled_write_P(PSTR("Volume Control"), false);
+            break;
+        case 1:
             oled_write_P(PSTR("Page Up/Down  "), false);
             break;
-        case _LAYER2:
-            oled_write_P(PSTR("Volume Control"), false);
-            break;
-        case _LAYER3:
+        case 2:
             oled_write_P(PSTR("Rgb mode cycle"), false);
             break;
-        case _LAYER4:
-            oled_write_P(PSTR("RGB brightness"), false);
-            break;
         default:
-            oled_write_P(PSTR("Volume Control"), false);
+            oled_write_P(PSTR("RGB brightness"), false);
     }
 }
 #endif
 
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case ENCDR_INCRMNT:
+        if (record->event.pressed) {
+            // when keycode QMKBEST is pressed
+            encoder_value = (encoder_value + 1) % 4;
+        } else {
+            // when keycode QMKBEST is released
+        }
+        break;
+    }
+    return true;
+};
+
 // encoder
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
-        switch (biton32(layer_state)) {
+        switch (encoder_value) {
             case 3:
+                 // rgb brightness
+                 if (clockwise) {
+                 // tap_code(RGB_VAI);
+                    rgblight_increase_val();
+                 }
+                  else {
+                  // tap_code(RGB_VAD);
+                  rgblight_decrease_val();
+                  }
+                  break;
+            case 2:
                 // rgb mode cycle
                 if (clockwise) {
                     rgblight_step();
@@ -208,16 +239,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
                     rgblight_step_reverse();
                 }
                 break;
-            case 4:
-                // rgb brightness
-                if (clockwise) {
-          //      tap_code(RGB_VAI);
-                    rgblight_increase_val();
-                } else {
-            //    tap_code(RGB_VAD);
-                     rgblight_decrease_val();
-                }
-                break;
+
             case 1:
                 // page up/down
                 if (clockwise) {
