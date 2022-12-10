@@ -19,16 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "config_common.h"
 
-/* USB Device descriptor parameter */
-//#define VENDOR_ID       0x1209
-//#define PRODUCT_ID      0x4649
-//#define DEVICE_VER      0x0001
-//#define MANUFACTURER    e3w2q
-//#define PRODUCT         SU120
-
 /* key matrix size */
-#define MATRIX_ROWS 6 //master: 6 rows, slave: 6 rows
-#define MATRIX_COLS 10
+#define MATRIX_ROWS 3 //master: 6 rows, slave: 6 rows
+#define MATRIX_COLS 5
 
 /*
  * Keyboard Matrix Assignments
@@ -40,8 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
  *
 */
-#define MATRIX_ROW_PINS { F6, F7, B1, B3, B2, B6 }
-#define MATRIX_COL_PINS { D1, D0, D4, C6, D7, E6 }
+#define MATRIX_ROW_PINS { F6, F7, B6 }
+#define MATRIX_COL_PINS { D1, D0, D4, C6, D7 }
 
 /* Rotary encoder */
 #define ENCODERS_PAD_A { F5, B5 }
