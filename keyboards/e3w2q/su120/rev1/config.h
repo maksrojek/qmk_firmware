@@ -42,8 +42,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
 */
 #define MATRIX_ROW_PINS { F6, F7, B1, B3, B2, B6 }
-#define MATRIX_COL_PINS { D1, D0, D4, C6, D7, E6, B4, B5, F4, F5 }
+#define MATRIX_COL_PINS { D1, D0, D4, C6, D7, E6 }
 #define UNUSED_PINS
+
+/* Rotary encoder */
+#define ENCODERS_PAD_A { F5, B5 }
+#define ENCODERS_PAD_B { F4, B4 }
+#define ENCODER_RESOLUTION 4
+
 
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION COL2ROW
@@ -52,7 +58,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
  */
 #define SOFT_SERIAL_PIN D2 // or D1, D2, D3, E6
-
 // #define BACKLIGHT_PIN B7
 // #define BACKLIGHT_BREATHING
 // #define BACKLIGHT_LEVELS 3

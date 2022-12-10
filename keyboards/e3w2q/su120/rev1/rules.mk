@@ -80,3 +80,4 @@ FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
 HD44780_ENABLE = no         # Enable support for HD44780 based LCDs (+400)
 LTO_ENABLE = yes
 SPLIT_KEYBOARD = yes
+ENCODER_ENABLE = yes
